@@ -1,0 +1,11 @@
+# Node.js 依赖
+node_modules/
+
+dist/
+
+.vscode/
+
+
+# 笔记本数据文件（可选，如果不希望同步用户数据）
+# notebooks/
+# *.kanote
