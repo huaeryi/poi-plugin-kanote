@@ -108,14 +108,28 @@ const App = () => {
 
         <div className="action-bar">
           <button 
-            className="btn btn-primary btn-small"
-            onClick={() => setCurrentView('todolist')}
-            title="待办事项"
+            className="btn btn-primary btn-medium"
+            onClick={() => setCurrentView('leveling')}
+            title="练级任务"
           >
-            ✅ TodoList
+            ⚡ 练级
           </button>
           <button 
-            className="btn btn-primary btn-small"
+            className="btn btn-primary btn-medium"
+            onClick={() => setCurrentView('farming')}
+            title="捞船任务"
+          >
+            🚢 捞船
+          </button>
+          <button 
+            className="btn btn-primary btn-medium"
+            onClick={() => setCurrentView('upgrade')}
+            title="改修任务"
+          >
+            🔧 改修
+          </button>
+          <button 
+            className="btn btn-primary btn-medium"
             onClick={() => setCurrentView('notebooks')}
             title="笔记本"
           >
@@ -154,7 +168,7 @@ const App = () => {
                 </div>
                 <div className="notebook-actions">
                   <span className="notebook-date">
-                    � {new Date(notebook.updatedAt).toLocaleDateString()}
+                    📅 {new Date(notebook.updatedAt).toLocaleDateString()}
                   </span>
                   <button
                     className="delete-btn"
@@ -172,7 +186,9 @@ const App = () => {
             )}
             </div>
           </div>
-        )}        {currentView === 'editor' && currentNotebook && (
+        )}
+
+        {currentView === 'editor' && currentNotebook && (
           <div className="editor-section">
             <NotebookEditor
               notebook={currentNotebook}
@@ -182,10 +198,29 @@ const App = () => {
           </div>
         )}
 
-        {currentView === 'todolist' && (
+        {currentView === 'leveling' && (
           <div className="todolist-section">
             <TodoList
-              onBack={() => setCurrentView('notebooks')}
+              type="leveling"
+              title="⚡ 练级任务"
+            />
+          </div>
+        )}
+
+        {currentView === 'farming' && (
+          <div className="todolist-section">
+            <TodoList
+              type="farming"
+              title="🚢 捞船任务"
+            />
+          </div>
+        )}
+
+        {currentView === 'upgrade' && (
+          <div className="todolist-section">
+            <TodoList
+              type="upgrade"
+              title="🔧 改修任务"
             />
           </div>
         )}

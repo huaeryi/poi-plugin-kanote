@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react'
 
-const TodoList = ({ onBack }) => {
+const TodoList = ({ type = 'general', title = '📋 任务列表' }) => {
   const [todos, setTodos] = useState([])
   const [newTodo, setNewTodo] = useState('')
   const [filter, setFilter] = useState('all') // all, active, completed
 
+  // 为每个类型使用不同的localStorage键
+  const storageKey = `kanote-todos-${type}`
+
   // 从localStorage加载todos
   useEffect(() => {
-    const savedTodos = localStorage.getItem('kanote-todos')
+    const savedTodos = localStorage.getItem(storageKey)
     if (savedTodos) {
       setTodos(JSON.parse(savedTodos))
     }
-  }, [])
+  }, [storageKey])
 
   // 保存todos到localStorage
   useEffect(() => {
-    localStorage.setItem('kanote-todos', JSON.stringify(todos))
-  }, [todos])
+    localStorage.setItem(storageKey, JSON.stringify(todos))
+  }, [todos, storageKey])
 
   const addTodo = () => {
     if (newTodo.trim()) {
@@ -63,10 +66,7 @@ const TodoList = ({ onBack }) => {
   return (
     <div className="todolist-container">
       <div className="todolist-header">
-        <button className="back-btn" onClick={onBack}>
-          🔙 返回
-        </button>
-        <h1>✅ 待办事项</h1>
+        <h1>{title}</h1>
         <div className="todo-stats">
           📋 总计: {todos.length} | ⏳ 进行中: {activeCount} | ✅ 已完成: {completedCount}
         </div>

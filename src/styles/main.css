@@ -62,7 +62,8 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  gap: 10px;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 /* 笔记本列表容器 */
@@ -331,6 +332,12 @@
   font-size: 1rem;
 }
 
+.btn-medium {
+  padding: 8px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 .btn-small {
   padding: 6px 12px;
   font-size: 0.8rem;
@@ -384,9 +391,9 @@
   background: #3c4043;
   border-bottom: 1px solid #404040;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10px;
 }
 
