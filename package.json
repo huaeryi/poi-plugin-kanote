@@ -10,10 +10,10 @@
   ],
   "author": "KaNote Team",
   "license": "MIT",
-  "homepage": "https://github.com/kanote/poi-plugin-kanote",
+  "homepage": "https://github.com/huaeryi/poi-plugin-kanote",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kanote/poi-plugin-kanote.git"
+    "url": "https://github.com/huaeryi/poi-plugin-kanote.git"
   },
   "keywords": [
     "poi",
@@ -28,7 +28,7 @@
     "description": "舰C笔记本，记录舰队计划",
     "icon": "fa/bookmark",
     "author": "KaNote Team",
-    "website": "https://github.com/kanote/poi-plugin-kanote",
+    "website": "https://github.com/huaeryi/poi-plugin-kanote",
     "version": "1.0.0",
     "apiVer": {
       "6.3.3": "1.0.0"
