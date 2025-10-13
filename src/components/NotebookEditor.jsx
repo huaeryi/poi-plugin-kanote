@@ -30,7 +30,7 @@ const NotebookEditor = ({ notebook, onSave, onBack }) => {
     if (saveStatus === 'modified') {
       const saveTimer = setTimeout(() => {
         handleSave()
-      }, 10000) // 3秒后自动保存
+      }, 100) 
 
       return () => clearTimeout(saveTimer)
     }
