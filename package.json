@@ -1,6 +1,6 @@
 {
   "name": "poi-plugin-kanote",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "舰C笔记本，记录舰队计划",
   "main": "index.js",
   "files": [
