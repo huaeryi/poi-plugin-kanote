@@ -1,6 +1,6 @@
 {
   "name": "poi-plugin-kanote",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "舰C笔记本，记录舰队计划",
   "main": "index.js",
   "files": [
@@ -17,7 +17,7 @@
   },
   "keywords": [
     "poi",
-    "plugin", 
+    "plugin",
     "notebook",
     "notes",
     "editor",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.22.0",
-    "@babel/preset-env": "^7.22.0", 
+    "@babel/preset-env": "^7.22.0",
     "@babel/preset-react": "^7.22.0",
     "babel-loader": "^9.1.0",
     "css-loader": "^6.8.0",
