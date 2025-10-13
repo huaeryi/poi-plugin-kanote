@@ -6,7 +6,7 @@ echo ========================================
 echo.
 
 :: 直接使用指定的POI目录
-set "POI_DIR=C:\Users\91758\AppData\Roaming\poi\plugins\node_modules"
+set "POI_DIR=%APPDATA%\poi\plugins\node_modules"
 
 echo 目标POI目录: %POI_DIR%
 echo.

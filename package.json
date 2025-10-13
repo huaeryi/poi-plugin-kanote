@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "舰C笔记本，记录舰队计划",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "dist/",
+    "package.json"
+  ],
   "author": "KaNote Team",
   "license": "MIT",
   "homepage": "https://github.com/kanote/poi-plugin-kanote",

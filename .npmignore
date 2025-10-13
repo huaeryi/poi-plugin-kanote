@@ -1,0 +1,64 @@
+# 源代码目录（不需要在发布包中）
+src/
+
+# 开发配置文件
+webpack.config.js
+.babelrc
+.babelrc.js
+.babelrc.json
+
+# 开发工具配置
+.vscode/
+.idea/
+
+# 开发依赖
+node_modules/
+
+# 测试文件
+test/
+tests/
+__tests__/
+*.test.js
+*.test.jsx
+*.spec.js
+*.spec.jsx
+
+# 文档文件
+README.md
+*.md
+docs/
+
+# 笔记本数据文件（用户数据，不应包含在发布包中）
+notebooks/
+*.kanote
+
+# 开发脚本
+install.bat
+install.sh
+
+# Git 相关
+.git/
+.gitignore
+.gitattributes
+
+# 其他开发文件
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# 日志文件
+*.log
+logs/
+
+# 临时文件
+.tmp/
+.temp/
+.cache/
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+
+# 注意：dist/ 目录会被包含在发布包中，这是必需的
