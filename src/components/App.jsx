@@ -117,7 +117,7 @@ const App = () => {
             onClick={() => setCurrentView('upgrade')}
             title="改修任务"
           >
-            🛠️ 改修啊啊啊
+            🛠️ 改修
           </button>
           <button 
             className="btn btn-primary btn-medium"

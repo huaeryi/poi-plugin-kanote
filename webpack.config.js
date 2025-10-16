@@ -17,7 +17,10 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /node_modules/,
+        // Only compile files in this package's src directory.
+        // When this package lives inside another project's node_modules,
+        // excluding all node_modules would skip our source files.
+        include: path.resolve(__dirname, 'src'),
         use: {
           loader: 'babel-loader',
           options: {
