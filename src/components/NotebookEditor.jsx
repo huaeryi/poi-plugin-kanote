@@ -106,10 +106,10 @@ const NotebookEditor = ({ notebook, onSave, onBack }) => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
             >
-              <option value="work">💼 工作</option>
-              <option value="study">📚 学习</option>
-              <option value="personal">👤 个人</option>
-              <option value="ideas">💡 灵感</option>
+              <option value="work">⏫️ 练级</option>
+              <option value="study">🚢 捞船</option>
+              <option value="personal">🛠️ 改修</option>
+              <option value="ideas">💡 其他</option>
             </select>
             
             <input

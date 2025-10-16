@@ -1,3 +1,7 @@
+:root {
+  font-size: 14px;
+}
+
 /* 基础样式 */
 * {
   box-sizing: border-box;
@@ -52,7 +56,7 @@
   border-radius: 4px;
   background: #3c4043;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 1rem;
   transition: border-color 0.2s;
 }
 
@@ -112,6 +116,7 @@
   flex-direction: column;
   gap: 0;
   padding: 5px 0;
+  margin: 0 5px;
   min-height: 0;
 }
 
@@ -367,7 +372,7 @@
 
 .btn-small {
   padding: 6px 12px;
-  font-size: 0.8rem;
+  font-size: 1rem;
 }
 
 /* 状态样式 */
@@ -412,6 +417,15 @@
   flex-direction: column;
   min-height: 0;
   overflow: hidden;
+}
+
+/* TodoList 头部区域（包含标题、过滤器、输入框） */
+.todolist-header-section {
+  flex-shrink: 0;
+  background: #2f343c;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 0 5px;
 }
 
 /* 编辑器区域样式 */
@@ -504,24 +518,33 @@
 }
 
 .todo-filters {
-  padding: 10px 20px;
+  padding: 8px 15px;
   background: #3c4043;
   border-bottom: 1px solid #404040;
   display: flex;
-  gap: 5px;
-  flex-wrap: wrap;
+  gap: 6px;
+  flex-wrap: nowrap; /* 强制单行 */
+  align-items: center;
+  justify-content: space-between;
   flex-shrink: 0;
 }
 
 .filter-btn {
-  padding: 6px 12px;
+  padding: 5px 8px;
   background: #555555;
   color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   transition: background-color 0.2s;
+  /* 三个按钮平分可用空间并可缩小 */
+  flex: 1 1 0; /* grow shrink basis */
+  min-width: 70px; /* 防止过度压缩 */
+  white-space: nowrap; /* 文本不换行 */
+  text-overflow: ellipsis;
+  overflow: hidden;
+  text-align: center;
 }
 
 .filter-btn:hover {
@@ -541,19 +564,27 @@
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.8rem;
-  margin-left: auto;
+  margin-left: auto; /* keep it to the right on wide screens */
+  flex: 0 0 auto;
 }
 
 .clear-btn:hover {
   background: #aa2222;
 }
 
+.clear-btn:disabled {
+  background: #666666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .todos-list {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 10px 20px;
+  padding: 10px 0;
   min-height: 0;
+  width: 100%;
 }
 
 .todo-item {
@@ -564,7 +595,7 @@
   background: #3c4043;
   border: 1px solid #404040;
   border-radius: 6px;
-  margin-bottom: 8px;
+  margin: 0 5px 8px 5px;
   transition: background-color 0.2s;
 }
 
@@ -645,4 +676,23 @@
 
 .todo-item .delete-btn:hover {
   background: #333333;
+}
+
+/* 小屏幕下把过滤按钮堆叠并让清除按钮靠右或在堆叠时居中 */
+@media (max-width: 600px) {
+  .todo-filters {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .todo-filters .filter-btn,
+  .todo-filters .clear-btn {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .todo-filters .clear-btn {
+    align-self: flex-end; /* 在堆叠时靠右 */
+  }
 }

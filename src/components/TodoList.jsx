@@ -12,7 +12,23 @@ const TodoList = ({ type = 'general', title = '📋 任务列表' }) => {
   useEffect(() => {
     const savedTodos = localStorage.getItem(storageKey)
     if (savedTodos) {
-      setTodos(JSON.parse(savedTodos))
+      try {
+        const parsed = JSON.parse(savedTodos)
+        // 归一化 completed 字段，处理 'true'/'false', 1/'1' 等情况
+        const normalized = parsed.map(t => ({
+          ...t,
+          completed: Boolean(
+            t.completed === true ||
+            t.completed === 'true' ||
+            t.completed === 1 ||
+            t.completed === '1'
+          )
+        }))
+        setTodos(normalized)
+      } catch (e) {
+        console.error('Failed to parse saved todos', e)
+        setTodos([])
+      }
     }
   }, [storageKey])
 
@@ -64,61 +80,51 @@ const TodoList = ({ type = 'general', title = '📋 任务列表' }) => {
   const completedCount = todos.filter(todo => todo.completed).length
 
   return (
-    <div className="todolist-container">
-      <div className="todolist-header">
-        <h1>{title}</h1>
-        <div className="todo-stats">
-          📋 总计: {todos.length} | ⏳ 进行中: {activeCount} | ✅ 已完成: {completedCount}
+    <>
+      <div className="todolist-header-section">
+        <div className="todolist-header">
+          <h1>{title}</h1>
         </div>
-      </div>
-
-      <div className="todo-input-section">
-        <div className="todo-input-container">
-          <input
-            type="text"
-            className="todo-input"
-            value={newTodo}
-            onChange={(e) => setNewTodo(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && addTodo()}
-            placeholder="📝 添加新的待办事项..."
-          />
+        <div className="todo-filters">
           <button 
-            className="add-todo-btn"
-            onClick={addTodo}
-            disabled={!newTodo.trim()}
+            className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+            onClick={() => setFilter('all')}
           >
-            ➕ 添加
+            📋 全部 ({todos.length})
+          </button>
+          <button 
+            className={`filter-btn ${filter === 'active' ? 'active' : ''}`}
+            onClick={() => setFilter('active')}
+          >
+            ⏳ 进行 ({activeCount})
+          </button>
+          <button 
+            className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
+            onClick={() => setFilter('completed')}
+          >
+            ✅ 完成 ({completedCount})
           </button>
         </div>
-      </div>
 
-      <div className="todo-filters">
-        <button 
-          className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
-          onClick={() => setFilter('all')}
-        >
-          📋 全部 ({todos.length})
-        </button>
-        <button 
-          className={`filter-btn ${filter === 'active' ? 'active' : ''}`}
-          onClick={() => setFilter('active')}
-        >
-          ⏳ 进行中 ({activeCount})
-        </button>
-        <button 
-          className={`filter-btn ${filter === 'completed' ? 'active' : ''}`}
-          onClick={() => setFilter('completed')}
-        >
-          ✅ 已完成 ({completedCount})
-        </button>
-        {completedCount > 0 && (
-          <button 
-            className="clear-btn"
-            onClick={clearCompleted}
-          >
-            🗑️ 清除已完成
-          </button>
-        )}
+        <div className="todo-input-section">
+          <div className="todo-input-container">
+            <input
+              type="text"
+              className="todo-input"
+              value={newTodo}
+              onChange={(e) => setNewTodo(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && addTodo()}
+              placeholder="📝 添加新的待办事项..."
+            />
+            <button 
+              className="add-todo-btn"
+              onClick={addTodo}
+              disabled={!newTodo.trim()}
+            >
+              ➕
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className="todos-list">
@@ -140,7 +146,7 @@ const TodoList = ({ type = 'general', title = '📋 任务列表' }) => {
           ))
         )}
       </div>
-    </div>
+    </>
   )
 }
 
