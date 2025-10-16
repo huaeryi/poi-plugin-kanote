@@ -75,11 +75,6 @@ if exist "dist" (
     echo - 复制构建文件
 )
 
-if exist "src" (
-    xcopy /s /e /y "src" "%TARGET_DIR%\src\" >nul
-    echo - 复制源代码
-)
-
 if exist "assets" (
     xcopy /s /e /y "assets" "%TARGET_DIR%\assets\" >nul
     echo - 复制资源文件
@@ -97,4 +92,3 @@ echo   3. 在主界面点击舰C笔记本标签
 echo.
 echo 安装位置: %TARGET_DIR%
 echo.
-pause
