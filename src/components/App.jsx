@@ -96,15 +96,6 @@ const App = () => {
   return (
     <div className="app poi-plugin vertical-layout">
       <div className="main-content">
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="🔍 搜索笔记本..."
-            value={searchQuery}
-            onChange={(e) => handleSearch(e.target.value)}
-            className="search-input"
-          />
-        </div>
 
         <div className="action-bar">
           <button 
@@ -112,7 +103,7 @@ const App = () => {
             onClick={() => setCurrentView('leveling')}
             title="练级任务"
           >
-            ⚡ 练级
+            ⏫️ 练级
           </button>
           <button 
             className="btn btn-primary btn-medium"
@@ -126,7 +117,7 @@ const App = () => {
             onClick={() => setCurrentView('upgrade')}
             title="改修任务"
           >
-            🔧 改修
+            🛠️ 改修啊啊啊
           </button>
           <button 
             className="btn btn-primary btn-medium"
@@ -139,13 +130,22 @@ const App = () => {
 
         {currentView === 'notebooks' && (
           <div className="notebooks-section">
-            <div className="notebooks-header">
+            <div className="search-and-add-bar">
+              <div className="search-box">
+                <input
+                  type="text"
+                  placeholder="🔍 搜索笔记本..."
+                  value={searchQuery}
+                  onChange={(e) => handleSearch(e.target.value)}
+                  className="search-input"
+                />
+              </div>
               <button 
-                className="btn btn-primary"
+                className="btn btn-primary btn-medium"
                 onClick={handleCreateNotebook}
                 title="创建新笔记本"
               >
-                ➕ 新建笔记
+                ➕ 新建
               </button>
             </div>
             <div className="notebooks-list">

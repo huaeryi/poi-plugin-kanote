@@ -55,6 +55,8 @@
   "scripts": {
     "build": "webpack --mode production",
     "dev": "webpack --mode development --watch",
+    "dev:hot": "webpack serve --mode development --hot --open",
+    "watch": "webpack --mode development --watch",
     "prepublishOnly": "npm run build"
   }
 }

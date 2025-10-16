@@ -20,34 +20,36 @@ if not exist "%POI_DIR%" (
 )
 
 :: 检查是否已构建
-if not exist "dist\bundle.js" (
-    echo 检测到未构建，开始构建...
-    echo.
+@REM if not exist "dist\bundle.js" (
+@REM     echo 检测到未构建，开始构建...
+@REM     echo.
     
-    :: 检查Node.js
-    node -v >nul 2>&1
-    if %errorlevel% neq 0 (
-        echo 错误: 未安装Node.js，请先安装
-        pause
-        exit /b 1
-    )
+@REM     :: 检查Node.js
+@REM     node -v >nul 2>&1
+@REM     if %errorlevel% neq 0 (
+@REM         echo 错误: 未安装Node.js，请先安装
+@REM         pause
+@REM         exit /b 1
+@REM     )
     
-    :: 安装依赖并构建
-    echo 安装依赖...
-    call npm install >nul 2>&1
+@REM     :: 安装依赖并构建
+@REM     echo 安装依赖...
+@REM     call npm install >nul 2>&1
     
-    echo 构建插件...
-    call npm run build >nul 2>&1
+@REM     echo 构建插件...
+@REM     call npm run build >nul 2>&1
     
-    if not exist "dist\bundle.js" (
-        echo 错误: 构建失败
-        pause
-        exit /b 1
-    )
+@REM     if not exist "dist\bundle.js" (
+@REM         echo 错误: 构建失败
+@REM         pause
+@REM         exit /b 1
+@REM     )
     
-    echo 构建完成!
-    echo.
-)
+@REM     echo 构建完成!
+@REM     echo.
+@REM )
+echo 开始构建...
+call npm run build >nul 2>&1
 
 :: 创建目标目录
 set "TARGET_DIR=%POI_DIR%\poi-plugin-kanote"
