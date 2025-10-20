@@ -696,3 +696,266 @@
     align-self: flex-end; /* 在堆叠时靠右 */
   }
 }
+
+/* 舰娘信息样式 */
+.ship-info-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.ship-info-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: 10px;
+  background: #2f343c;
+}
+
+.ship-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #454950;
+}
+
+.ship-info-header h3 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.ship-stats {
+  display: flex;
+  gap: 15px;
+}
+
+.stat-item {
+  color: #cccccc;
+  font-size: 0.9rem;
+  padding: 4px 8px;
+  background: #454950;
+  border-radius: 4px;
+}
+
+.ship-info-filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.search-box {
+  flex: 1;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #454950;
+  border-radius: 4px;
+  background: #1e2125;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.filter-box {
+  min-width: 120px;
+}
+
+.type-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #454950;
+  border-radius: 4px;
+  background: #1e2125;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.type-select:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.ship-list {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+.ship-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+  padding: 5px;
+}
+
+.ship-card {
+  background: #454950;
+  border: 1px solid #5a5f66;
+  border-radius: 8px;
+  padding: 12px;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.ship-card:hover {
+  background: #5a5f66;
+  border-color: #0066cc;
+}
+
+.ship-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #5a5f66;
+}
+
+.ship-name {
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.ship-level {
+  color: #ffcc00;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.ship-info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ship-info-item .label {
+  color: #aaaaaa;
+  font-size: 0.85rem;
+}
+
+.ship-info-item .value {
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* 舰娘图像样式 */
+.ship-content {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.ship-image-container {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #2f343c;
+  border: 1px solid #5a5f66;
+}
+
+.ship-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 3px;
+  transition: opacity 0.2s;
+}
+
+.ship-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #3c4043;
+  border-radius: 3px;
+}
+
+.ship-placeholder-text {
+  font-size: 24px;
+  color: #aaaaaa;
+  margin-bottom: 2px;
+}
+
+.ship-id-text {
+  font-size: 10px;
+  color: #888888;
+  font-weight: bold;
+}
+
+.ship-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: #aaaaaa;
+}
+
+.loading-state h3 {
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+.loading-state p {
+  font-size: 0.9rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .ship-info-filters {
+    flex-direction: column;
+  }
+  
+  .ship-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .ship-stats {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .ship-content {
+    gap: 8px;
+  }
+  
+  .ship-image-container {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .ship-placeholder-text {
+    font-size: 18px;
+  }
+  
+  .ship-id-text {
+    font-size: 8px;
+  }
+}

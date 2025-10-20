@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Notebook from './Notebook'
 import TodoList from './TodoList'
+import ShipInfo from './ShipInfo'
 
 const App = () => {
   const [currentView, setCurrentView] = useState('leveling') // 默认打开练级计划
@@ -38,6 +39,13 @@ const App = () => {
           >
             📝 笔记
           </button>
+          <button 
+            className="btn btn-primary btn-medium"
+            onClick={() => setCurrentView('ships')}
+            title="舰娘信息"
+          >
+            🚢 舰娘
+          </button>
         </div>
 
         {currentView === 'notebooks' && <Notebook />}
@@ -66,6 +74,12 @@ const App = () => {
               type="upgrade"
               title="🛠️改修计划"
             />
+          </div>
+        )}
+
+        {currentView === 'ships' && (
+          <div className="ship-info-section">
+            <ShipInfo />
           </div>
         )}
       </div>
