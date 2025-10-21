@@ -1130,15 +1130,6 @@
   object-position: center;
 }
 
-.ship-avatar-gradient {
-  height: 60px;
-  width: 100%;
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  z-index: 1;
-  pointer-events: none;
-}
 
 .ship-image-container:hover .ship-avatar {
   z-index: 5;

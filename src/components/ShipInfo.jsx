@@ -96,12 +96,6 @@ const ShipImageWithFallback = ({ shipId, shipName, primaryUrl, avatarOffset = 0,
         onError={handleError}
         onLoad={handleLoad}
       />
-      <div 
-        className="ship-avatar-gradient"
-        style={{
-          background: `linear-gradient(to right, transparent 0%, transparent 30%, ${bgColor}40 60%, ${bgColor}80 100%)`
-        }}
-      />
     </div>
   )
 }
