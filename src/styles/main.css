@@ -424,8 +424,10 @@
   flex-shrink: 0;
   background: #2f343c;
   border-radius: 8px;
-  overflow: hidden;
+  overflow: visible;
   margin: 0 5px;
+  position: relative;
+  z-index: 10;
 }
 
 /* 编辑器区域样式 */
@@ -475,11 +477,14 @@
   background: #3c4043;
   border-bottom: 1px solid #404040;
   flex-shrink: 0;
+  position: relative;
+  overflow: visible;
 }
 
 .todo-input-container {
   display: flex;
   gap: 10px;
+  position: relative;
 }
 
 .todo-input {
@@ -499,7 +504,7 @@
 
 .add-todo-btn {
   padding: 10px 20px;
-  background: #0066cc;
+  background: #28a745;
   color: white;
   border: none;
   border-radius: 4px;
@@ -509,7 +514,7 @@
 }
 
 .add-todo-btn:hover {
-  background: #0052a3;
+  background: #218838;
 }
 
 .add-todo-btn:disabled {
@@ -589,7 +594,7 @@
 
 .todo-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 12px;
   padding: 12px 15px;
   background: #3c4043;
@@ -612,17 +617,63 @@
   color: #aaaaaa;
 }
 
-.todo-checkbox input {
-  width: 16px;
-  height: 16px;
-  cursor: pointer;
+/* 左侧头像区域 */
+.todo-avatar {
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+.ship-avatar {
+  width: 48px;
+  height: 48px;
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #2f343c;
+  border: 2px solid #555555;
+}
+
+.ship-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.ship-avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #555555;
+  color: #aaaaaa;
+  font-size: 10px;
+  font-weight: bold;
+}
+
+.todo-icon {
+  font-size: 24px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #555555;
+  border-radius: 6px;
+}
+
+/* 中间内容区域 */
 .todo-content {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 4px;
+  min-width: 0;
 }
 
 .todo-text {
@@ -630,6 +681,86 @@
   font-size: 0.9rem;
   cursor: pointer;
   word-wrap: break-word;
+  line-height: 1.4;
+}
+
+/* 练级任务显示 */
+.leveling-display {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ship-name {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.level-progress {
+  font-size: 0.85rem;
+  color: #ffcc00;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 捞船任务显示 */
+.farming-display {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.farming-status {
+  font-size: 0.85rem;
+  color: #00cc99;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.completed-badge {
+  font-size: 0.75rem;
+  color: #00cc66;
+  font-weight: bold;
+}
+
+/* 练级任务编辑 */
+.leveling-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ship-name-display {
+  font-weight: 600;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.level-edit {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ffcc00;
+  font-size: 0.85rem;
+}
+
+.target-level-edit {
+  width: 60px;
+  padding: 2px 6px;
+  border: 1px solid #0066cc;
+  border-radius: 3px;
+  background: #2f343c;
+  color: #ffffff;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.target-level-edit:focus {
+  outline: none;
+  border-color: #0088ff;
 }
 
 .todo-edit-input {
@@ -642,23 +773,32 @@
   font-size: 0.9rem;
 }
 
+.todo-edit-input:focus {
+  outline: none;
+  border-color: #0088ff;
+}
+
 .todo-date {
   font-size: 0.75rem;
   color: #aaaaaa;
+  margin-top: 4px;
 }
 
+/* 右侧操作区域 */
 .todo-actions {
+  flex-shrink: 0;
   display: flex;
-  gap: 5px;
+  align-items: center;
+  gap: 8px;
 }
 
 .edit-btn, .todo-item .delete-btn {
   background: none;
   border: none;
   cursor: pointer;
-  padding: 4px 6px;
-  border-radius: 3px;
-  font-size: 0.8rem;
+  padding: 6px 8px;
+  border-radius: 4px;
+  font-size: 0.9rem;
   transition: background-color 0.2s;
 }
 
@@ -678,6 +818,18 @@
   background: #333333;
 }
 
+.todo-checkbox {
+  display: flex;
+  align-items: center;
+}
+
+.todo-checkbox input {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  margin: 0;
+}
+
 /* 小屏幕下把过滤按钮堆叠并让清除按钮靠右或在堆叠时居中 */
 @media (max-width: 600px) {
   .todo-filters {
@@ -694,6 +846,45 @@
 
   .todo-filters .clear-btn {
     align-self: flex-end; /* 在堆叠时靠右 */
+  }
+
+  /* 小屏幕下TodoItem布局调整 */
+  .todo-item {
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .todo-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .ship-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .todo-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+
+  .ship-name {
+    font-size: 0.9rem;
+  }
+
+  .level-progress {
+    font-size: 0.8rem;
+  }
+
+  .todo-actions {
+    gap: 4px;
+  }
+
+  .edit-btn, .todo-item .delete-btn {
+    padding: 4px 6px;
+    font-size: 0.8rem;
   }
 }
 
@@ -925,6 +1116,503 @@
 
 .loading-state p {
   font-size: 0.9rem;
+}
+
+/* ShipSelector 组件样式 */
+.ship-selector {
+  position: relative;
+  flex: 2; /* 增加占比，让舰娘选择器更宽 */
+}
+
+.ship-selector-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.select-ship-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  background: #2f343c;
+  color: #ffffff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s;
+  min-height: 42px; /* 确保与选中状态高度一致 */
+  box-sizing: border-box;
+}
+
+.select-ship-btn:hover {
+  border-color: #0066cc;
+}
+
+.select-ship-btn:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.selected-ship {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #0066cc;
+  border-radius: 4px;
+  background: #2f343c;
+  color: #ffffff;
+  font-size: 0.9rem;
+  position: relative;
+  min-height: 42px; /* 确保与未选中按钮高度一致 */
+  box-sizing: border-box;
+}
+
+.selected-ship .ship-info-area {
+  flex: 1;
+  cursor: pointer;
+  padding: 4px;
+  margin: -4px;
+  border-radius: 3px;
+}
+
+.selected-ship .ship-info {
+  flex: 1;
+  font-weight: 500;
+}
+
+.clear-ship-btn {
+  background: none;
+  border: none;
+  color: #ff6666;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.clear-ship-btn:hover {
+  color: #ff3333;
+}
+
+.ship-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  background: #3c4043;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  margin-top: 4px;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ship-search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-bottom: 1px solid #404040;
+  background: #2f343c;
+  color: #ffffff;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.ship-search-input:focus {
+  outline: none;
+  background: #1e2125;
+}
+
+.ship-search-input::placeholder {
+  color: #888888;
+}
+
+.ship-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 250px;
+}
+
+.ship-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #404040;
+}
+
+.ship-item:last-child {
+  border-bottom: none;
+}
+
+.ship-item:hover {
+  background: #454950;
+}
+
+.ship-item .ship-name {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.ship-item .ship-level {
+  color: #ffcc00;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.no-ships {
+  padding: 20px;
+  text-align: center;
+  color: #aaaaaa;
+  font-size: 0.9rem;
+}
+
+/* 舰娘详细信息 Tooltip */
+.ship-tooltip {
+  background: #1a1d20;
+  border: 2px solid #0066cc;
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 200px;
+  max-width: 280px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  font-size: 0.85rem;
+  color: #ffffff;
+  pointer-events: none;
+  animation: tooltipFadeIn 0.2s ease-out;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-100%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-100%) scale(1);
+  }
+}
+
+.ship-tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #333;
+}
+
+.ship-tooltip-header h4 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.ship-type {
+  font-size: 0.75rem;
+  color: #aaaaaa;
+  background: #333;
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.ship-tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ship-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stat-label {
+  color: #cccccc;
+  font-size: 0.8rem;
+}
+
+.stat-value {
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.ship-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 8px 0;
+  padding: 8px;
+  background: #2a2d30;
+  border-radius: 4px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.stat-icon {
+  font-size: 0.9rem;
+}
+
+.stat-number {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #ffcc00;
+}
+
+/* Tooltip 箭头 */
+.ship-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #0066cc;
+}
+
+.ship-tooltip::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: #1a1d20;
+  margin-top: 2px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .ship-tooltip {
+    min-width: 180px;
+    max-width: 250px;
+    font-size: 0.8rem;
+  }
+
+  .ship-stats-grid {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .stat-icon {
+    font-size: 0.8rem;
+  }
+
+  .stat-number {
+    font-size: 0.75rem;
+  }
+}
+
+/* AllShipSelector 组件样式 */
+.all-ship-selector {
+  position: relative;
+  flex: 1;
+}
+
+.all-ship-selector .ship-selector-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.all-ship-selector .select-ship-btn {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  background: #2f343c;
+  color: #ffffff;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s;
+}
+
+.all-ship-selector .select-ship-btn:hover {
+  border-color: #0066cc;
+}
+
+.all-ship-selector .select-ship-btn:focus {
+  outline: none;
+  border-color: #0066cc;
+}
+
+.all-ship-selector .selected-ship {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid #0066cc;
+  border-radius: 4px;
+  background: #2f343c;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.all-ship-selector .ship-info {
+  flex: 1;
+  font-weight: 500;
+}
+
+.all-ship-selector .clear-ship-btn {
+  background: none;
+  border: none;
+  color: #ff6666;
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.2s;
+}
+
+.all-ship-selector .clear-ship-btn:hover {
+  color: #ff3333;
+}
+
+.all-ship-selector .ship-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  background: #3c4043;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  margin-top: 4px;
+  z-index: 9999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.all-ship-selector .ship-search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-bottom: 1px solid #404040;
+  background: #2f343c;
+  color: #ffffff;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.all-ship-selector .ship-search-input:focus {
+  outline: none;
+  background: #1e2125;
+}
+
+.all-ship-selector .ship-search-input::placeholder {
+  color: #888888;
+}
+
+.all-ship-selector .ship-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 250px;
+}
+
+.all-ship-selector .ship-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #404040;
+}
+
+.all-ship-selector .ship-item:last-child {
+  border-bottom: none;
+}
+
+.all-ship-selector .ship-item:hover {
+  background: #454950;
+}
+
+.all-ship-selector .ship-item.not-owned {
+  opacity: 0.7;
+}
+
+.all-ship-selector .ship-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.all-ship-selector .ship-name {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.all-ship-selector .ship-type {
+  color: #aaaaaa;
+  font-size: 0.75rem;
+}
+
+.all-ship-selector .ship-status {
+  display: flex;
+  align-items: center;
+}
+
+.owned-badge {
+  background: #28a745;
+  color: #ffffff;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.not-owned-badge {
+  background: #dc3545;
+  color: #ffffff;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.all-ship-selector .no-ships {
+  padding: 20px;
+  text-align: center;
+  color: #aaaaaa;
+  font-size: 0.9rem;
+}
+
+/* 目标等级输入框样式 */
+.target-level-input {
+  width: 90px; /* 减少宽度，让目标等级输入框更窄 */
+  flex: 0 0 auto;
+}
+
+/* TodoItem 中的舰娘信息样式 */
+.ship-info {
+  font-size: 0.8rem;
+  color: #ffcc00;
+  background: #3c4043;
+  padding: 4px 8px;
+  border-radius: 3px;
+  margin-top: 4px;
+  display: inline-block;
 }
 
 /* 响应式设计 */

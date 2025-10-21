@@ -327,6 +327,48 @@ class ShipDataService {
     }
   }
 
+  // 获取所有舰娘的主数据（包括未获得的）
+  getAllShipMaster() {
+    if (!this.master) return []
+    
+    try {
+      // 尝试获取舰娘主数据
+      const shipMaster = this.master.api_mst_ship || this.master.ship || []
+      if (Array.isArray(shipMaster)) {
+        return shipMaster.filter(ship => ship && ship.api_id && ship.api_name)
+      }
+      return []
+    } catch (error) {
+      console.error('获取舰娘主数据失败:', error)
+      return []
+    }
+  }
+
+  // 检查是否拥有某个舰娘
+  isShipOwned(shipMasterId) {
+    try {
+      const ownedShips = this.getOwnedShips()
+      return ownedShips.some(ship => ship.api_ship_id === shipMasterId)
+    } catch (error) {
+      console.error('检查舰娘拥有状态失败:', error)
+      return false
+    }
+  }
+
+  // 获取舰娘类型名称
+  getShipTypeName(shipTypeId) {
+    if (!this.master) return '未知'
+    
+    try {
+      const shipTypes = this.master.api_mst_stype || this.master.stype || []
+      const shipType = shipTypes.find(type => type.api_id === shipTypeId)
+      return shipType ? shipType.api_name : '未知'
+    } catch (error) {
+      console.error('获取舰娘类型名称失败:', error)
+      return '未知'
+    }
+  }
+
   // 根据 ID 获取舰娘信息
   getShipById(shipId) {
     if (!this.ships || !shipId) return null
