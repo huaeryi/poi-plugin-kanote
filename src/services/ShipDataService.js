@@ -668,7 +668,7 @@ class ShipDataService {
         }
         
         // 如果ship对象中没有avatarOffset，返回默认值0
-        console.log(`ShipDataService: ship对象中没有找到avatarOffset字段，ship keys:`, Object.keys(ship))
+        // console.log(`ShipDataService: ship对象中没有找到avatarOffset字段，ship keys:`, Object.keys(ship))
         return 0
       }
       

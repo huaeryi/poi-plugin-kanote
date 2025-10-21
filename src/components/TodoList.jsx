@@ -4,6 +4,82 @@ import ShipSelector from './ShipSelector'
 import AllShipSelector from './AllShipSelector'
 import shipDataService from '../services/ShipDataService'
 
+// 舰娘图像组件
+const ShipImageWithFallback = ({ shipId, shipName, primaryUrl, avatarOffset = 0, bgColor = '#000' }) => {
+  const [showPlaceholder, setShowPlaceholder] = useState(false)
+  const [currentUrlIndex, setCurrentUrlIndex] = useState(0)
+  
+  // 处理图片URL - 如果是poi的路径，需要转换为可访问的URL
+  let imageUrl = primaryUrl || `../../../assets/images/ship/${shipId}_middle.png`
+  let possibleUrls = [imageUrl]
+  
+  // 如果是poi的路径，准备多种可能的URL格式
+  if (primaryUrl && primaryUrl.startsWith('/kcs2/')) {
+    possibleUrls = [
+      // 方式1: 直接使用原路径
+      primaryUrl,
+      // 方式2: 添加file://协议
+      `file://${primaryUrl}`,
+      // 方式3: 添加poi://协议
+      `poi://${primaryUrl}`,
+      // 方式4: 使用相对路径（从当前域名开始）
+      `.${primaryUrl}`,
+      // 方式5: 使用绝对路径（从根开始）
+      `http://localhost${primaryUrl}`,
+      // 方式6: 使用poi的本地服务器
+      `http://127.0.0.1:8080${primaryUrl}`,
+      // 方式7: 使用默认路径作为最后的备选
+      `../../../assets/images/ship/${shipId}_middle.png`
+    ]
+    
+    imageUrl = possibleUrls[currentUrlIndex]
+  }
+
+  const handleError = (e) => {
+    // 如果还有更多URL可以尝试
+    if (currentUrlIndex < possibleUrls.length - 1) {
+      const nextIndex = currentUrlIndex + 1
+      setCurrentUrlIndex(nextIndex)
+    } else {
+      setShowPlaceholder(true)
+    }
+  }
+
+  const handleLoad = (e) => {
+    setShowPlaceholder(false)
+  }
+
+  // 如果应该显示占位符
+  if (showPlaceholder) {
+    return (
+      <div className="ship-image-placeholder">
+        <span className="ship-placeholder-text">🚢</span>
+        <span className="ship-id-text">{shipId}</span>
+      </div>
+    )
+  }
+
+  // 计算图像位置偏移量
+  // avatarOffset是一个0-1之间的值，表示图像的水平位置
+  // 0表示显示图像的最左边，1表示显示图像的最右边
+  const objectPositionX = Math.round(avatarOffset * 100)
+
+  return (
+    <div className="ship-avatar-container">
+      <img 
+        src={imageUrl}
+        alt={shipName}
+        className="ship-avatar"
+        style={{ 
+          objectPosition: `${objectPositionX}% center`
+        }}
+        onError={handleError}
+        onLoad={handleLoad}
+      />
+    </div>
+  )
+}
+
 const TodoList = ({ type = 'general', title = '📋 任务列表' }) => {
   const [todos, setTodos] = useState([])
   const [newTodo, setNewTodo] = useState('')
@@ -371,13 +447,27 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
     try {
       const ship = shipDataService.getShipById(todo.shipId)
       if (ship) {
-        // poi的舰娘头像路径规则，这里是一个示例
-        return `/assets/img/ship/${ship.api_ship_id}.png`
+        // 使用ShipDataService的getShipImageUrl方法获取图片URL
+        return shipDataService.getShipImageUrl(ship.api_ship_id, 'middle')
       }
     } catch (error) {
       console.error('获取舰娘头像失败:', error)
     }
     return null
+  }
+
+  // 获取舰娘头像偏移量
+  const getShipAvatarOffset = () => {
+    if (!isShipTodo) return 0
+    try {
+      const ship = shipDataService.getShipById(todo.shipId)
+      if (ship) {
+        return shipDataService.getShipAvatarOffset(ship)
+      }
+    } catch (error) {
+      console.error('获取舰娘头像偏移量失败:', error)
+    }
+    return 0
   }
 
   // 获取舰娘详细信息
@@ -463,20 +553,12 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
       {/* 左侧：舰娘头像区域 */}
       <div className="todo-avatar">
         {isShipTodo ? (
-          <div className="ship-avatar">
-            <img 
-              src={getShipAvatarUrl()}
-              alt={todo.shipName}
-              className="ship-avatar-img"
-              onError={(e) => {
-                e.target.style.display = 'none'
-                e.target.nextSibling.style.display = 'flex'
-              }}
-            />
-            <div className="ship-avatar-placeholder" style={{display: 'none'}}>
-              <span className="ship-id">{todo.shipId}</span>
-            </div>
-          </div>
+          <ShipImageWithFallback 
+            shipId={todo.shipId}
+            shipName={todo.shipName}
+            primaryUrl={getShipAvatarUrl()}
+            avatarOffset={getShipAvatarOffset()}
+          />
         ) : (
           <div className="todo-icon">📝</div>
         )}
