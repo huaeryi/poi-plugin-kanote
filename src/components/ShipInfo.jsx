@@ -2,19 +2,69 @@ import React, { useState, useEffect } from 'react'
 import shipDataService from '../services/ShipDataService'
 
 // 舰娘图像组件
-const ShipImageWithFallback = ({ shipId, shipName, primaryUrl }) => {
+const ShipImageWithFallback = ({ shipId, shipName, primaryUrl, avatarOffset = 0, bgColor = '#000' }) => {
   const [showPlaceholder, setShowPlaceholder] = useState(false)
+  const [currentUrlIndex, setCurrentUrlIndex] = useState(0)
+  
+  // 调试信息：输出avatarOffset的值
+  console.log(`ShipImageWithFallback: 舰娘 ${shipId} (${shipName}) 的avatarOffset:`, avatarOffset)
 
-  // 直接使用标准路径
-  const imageUrl = primaryUrl || `../../../assets/images/ship/${shipId}_middle.png`
-
-  const handleError = () => {
-    console.log(`图像加载失败: ${imageUrl}`)
-    setShowPlaceholder(true)
+  // 处理图片URL - 如果是poi的路径，需要转换为可访问的URL
+  let imageUrl = primaryUrl || `../../../assets/images/ship/${shipId}_middle.png`
+  let possibleUrls = [imageUrl]
+  
+  // 如果是poi的路径，准备多种可能的URL格式
+  if (primaryUrl && primaryUrl.startsWith('/kcs2/')) {
+    console.log(`检测到poi资源路径: ${primaryUrl}`)
+    
+    possibleUrls = [
+      // 方式1: 直接使用原路径
+      primaryUrl,
+      // 方式2: 添加file://协议
+      `file://${primaryUrl}`,
+      // 方式3: 添加poi://协议
+      `poi://${primaryUrl}`,
+      // 方式4: 使用相对路径（从当前域名开始）
+      `.${primaryUrl}`,
+      // 方式5: 使用绝对路径（从根开始）
+      `http://localhost${primaryUrl}`,
+      // 方式6: 使用poi的本地服务器
+      `http://127.0.0.1:8080${primaryUrl}`,
+      // 方式7: 使用默认路径作为最后的备选
+      `../../../assets/images/ship/${shipId}_middle.png`
+    ]
+    
+    imageUrl = possibleUrls[currentUrlIndex]
+    console.log(`尝试使用URL (${currentUrlIndex + 1}/${possibleUrls.length}): ${imageUrl}`)
   }
 
-  const handleLoad = () => {
-    console.log(`图像加载成功: ${imageUrl}`)
+  console.log(`ShipImageWithFallback: 准备加载图片 - ID: ${shipId}, URL: ${imageUrl}`)
+
+  const handleError = (e) => {
+    console.error(`图像加载失败: ${imageUrl}`, e)
+    console.log(`错误详情:`, {
+      src: e.target.src,
+      naturalWidth: e.target.naturalWidth,
+      naturalHeight: e.target.naturalHeight,
+      complete: e.target.complete
+    })
+    
+    // 如果还有更多URL可以尝试
+    if (currentUrlIndex < possibleUrls.length - 1) {
+      const nextIndex = currentUrlIndex + 1
+      console.log(`尝试下一个URL (${nextIndex + 1}/${possibleUrls.length}): ${possibleUrls[nextIndex]}`)
+      setCurrentUrlIndex(nextIndex)
+    } else {
+      console.log(`所有URL都尝试失败，显示占位符`)
+      setShowPlaceholder(true)
+    }
+  }
+
+  const handleLoad = (e) => {
+    console.log(`图像加载成功: ${imageUrl}`, {
+      naturalWidth: e.target.naturalWidth,
+      naturalHeight: e.target.naturalHeight
+    })
     setShowPlaceholder(false)
   }
 
@@ -28,20 +78,31 @@ const ShipImageWithFallback = ({ shipId, shipName, primaryUrl }) => {
     )
   }
 
+  // 计算图像位置偏移量
+  // avatarOffset是一个0-1之间的值，表示图像的水平位置
+  // 0表示显示图像的最左边，1表示显示图像的最右边
+  const objectPositionX = Math.round(avatarOffset * 100)
+  console.log(`ShipImageWithFallback: avatarOffset: ${avatarOffset}, object-position-x: ${objectPositionX}%`)
+
   return (
-    <>
+    <div className="ship-avatar-container">
       <img 
         src={imageUrl}
         alt={shipName}
-        className="ship-image"
+        className="ship-avatar"
+        style={{ 
+          objectPosition: `${objectPositionX}% center`
+        }}
         onError={handleError}
         onLoad={handleLoad}
       />
-      <div className="ship-image-placeholder" style={{ display: 'none' }}>
-        <span className="ship-placeholder-text">🚢</span>
-        <span className="ship-id-text">{shipId}</span>
-      </div>
-    </>
+      <div 
+        className="ship-avatar-gradient"
+        style={{
+          background: `linear-gradient(to right, transparent 0%, transparent 30%, ${bgColor}40 60%, ${bgColor}80 100%)`
+        }}
+      />
+    </div>
   )
 }
 
@@ -188,6 +249,36 @@ const ShipInfo = () => {
     }
   }
 
+  // 获取舰娘类型对应的颜色
+  const getShipTypeColor = (ship) => {
+    const typeColors = {
+      1: '#4CAF50',   // 駆逐艦 - 翠绿色
+      2: '#2196F3',   // 軽巡洋艦 - 明亮蓝
+      3: '#9C27B0',   // 重雷装巡洋艦 - 深紫色
+      4: '#FF9800',   // 重巡洋艦 - 活力橙
+      5: '#00BCD4',   // 航空巡洋艦 - 青绿色
+      6: '#E91E63',   // 軽空母 - 玫瑰粉
+      7: '#F44336',   // 戦艦 - 鲜红色
+      8: '#F44336',   // 戦艦 - 鲜红色
+      9: '#795548',   // 航空戦艦 - 深棕色
+      10: '#FF5722',  // 正規空母 - 深橙色
+      11: '#607D8B',  // 超弩級戦艦 - 蓝灰色
+      12: '#3F51B5',  // 潜水艦 - 靛蓝色
+      13: '#673AB7',  // 潜水空母 - 深紫色
+      14: '#009688',  // 補給艦 - 青绿色
+      15: '#8BC34A',  // 水上機母艦 - 浅绿色
+      16: '#CDDC39',  // 揚陸艦 - 黄绿色
+      17: '#FFC107',  // 装甲空母 - 金黄色
+      18: '#FFEB3B',  // 工作艦 - 浅黄色
+      19: '#9E9E9E',  // 潜水母艦 - 灰色
+      20: '#607D8B',  // 練習巡洋艦 - 蓝灰色
+      21: '#009688'   // 補給艦 - 青绿色
+    }
+    
+    const shipType = shipDataService.getShipType(ship)
+    return typeColors[shipType] || '#6A1B9A' // 默认使用紫色
+  }
+
 
   if (!isServiceReady) {
     return (
@@ -275,6 +366,8 @@ const ShipInfo = () => {
                         shipId={ship.api_ship_id}
                         shipName={getShipName(ship)}
                         primaryUrl={imageUrl}
+                        avatarOffset={shipDataService.getShipAvatarOffset(ship)}
+                        bgColor={getShipTypeColor(ship)}
                       />
                     </div>
                     

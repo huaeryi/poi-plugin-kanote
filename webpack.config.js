@@ -11,7 +11,8 @@ module.exports = {
   },
   externals: {
     'react': 'commonjs react',
-    'react-dom': 'commonjs react-dom'
+    'react-dom': 'commonjs react-dom',
+    'views/utils/ship-img': 'commonjs views/utils/ship-img'
   },
   module: {
     rules: [

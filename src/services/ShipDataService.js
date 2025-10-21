@@ -636,6 +636,129 @@ class ShipDataService {
     }
   }
 
+  // 获取服务器IP地址
+  getServerIP() {
+    try {
+      if (!this.store) return '203.104.209.71' // 默认IP
+      
+      const state = this.store.getState()
+      // 从state.info.server.ip获取IP，如果没有则使用默认值
+      const ip = state.info && state.info.server && state.info.server.ip || '203.104.209.71'
+      console.log(`ShipDataService: 获取到服务器IP: ${ip}`)
+      return ip
+    } catch (error) {
+      console.error('ShipDataService: 获取服务器IP失败:', error)
+      return '203.104.209.71' // 默认IP
+    }
+  }
+
+  // 获取舰娘头像偏移量
+  getShipAvatarOffset(ship) {
+    try {
+      // 如果传入的是ship对象，直接从ship对象中获取avatarOffset
+      if (ship && typeof ship === 'object') {
+        // 尝试多种可能的avatarOffset字段名
+        const possibleFields = ['avatarOffset', 'api_avatar_offset', 'avatar_offset']
+        
+        for (const field of possibleFields) {
+          if (ship[field] !== undefined && ship[field] !== null) {
+            console.log(`ShipDataService: 从字段 ${field} 获取到avatarOffset:`, ship[field])
+            return ship[field]
+          }
+        }
+        
+        // 如果ship对象中没有avatarOffset，返回默认值0
+        console.log(`ShipDataService: ship对象中没有找到avatarOffset字段，ship keys:`, Object.keys(ship))
+        return 0
+      }
+      
+      // 如果传入的是shipId，尝试从shipData中查找
+      if (typeof ship === 'number' || typeof ship === 'string') {
+        const shipId = ship
+        if (this.shipData && this.shipData[shipId]) {
+          const shipInfo = this.shipData[shipId]
+          return shipInfo.avatarOffset || 0
+        }
+      }
+      
+      // 如果无法获取，返回默认值0
+      return 0
+    } catch (error) {
+      console.error('ShipDataService: 获取舰娘头像偏移量失败:', error)
+      return 0
+    }
+  }
+
+  // 获取舰娘图像URL
+  getShipImageUrl(shipId, type = 'middle', damaged = false) {
+    try {
+      // 确保参数类型正确
+      const id = Number(shipId)
+      const isDamaged = Boolean(damaged)
+      
+      // 检查poi的getShipImgPath接口是否可用
+      let getShipImgPath = null
+      
+      // 尝试多种方式获取poi的getShipImgPath函数
+      try {
+        // 方式1: 从全局对象获取
+        if (typeof window !== 'undefined' && window.getShipImgPath) {
+          getShipImgPath = window.getShipImgPath
+        }
+        // 方式2: 从poi的全局对象获取
+        else if (typeof window !== 'undefined' && window.poi && window.poi.getShipImgPath) {
+          getShipImgPath = window.poi.getShipImgPath
+        }
+        // 方式3: 尝试动态require（仅在运行时）
+        else if (typeof require !== 'undefined') {
+          try {
+            const shipImgModule = require('views/utils/ship-img')
+            getShipImgPath = shipImgModule.getShipImgPath
+          } catch (requireError) {
+            // require失败，继续使用默认路径
+          }
+        }
+      } catch (error) {
+        // 获取接口失败，继续使用默认路径
+      }
+      
+      if (getShipImgPath && typeof getShipImgPath === 'function') {
+        // 根据type参数确定图像类型 - poi期望的是字符串类型
+        let imageType = 'remodel'  // 默认使用remodel
+        if (type === 'small') {
+          imageType = 'small'
+        } else if (type === 'middle') {
+          imageType = 'remodel'  // middle对应remodel
+        } else if (type === 'large') {
+          imageType = 'remodel'
+        } else if (type === 'banner') {
+          imageType = 'banner'
+        }
+        
+        // 获取服务器IP
+        const ip = this.getServerIP()
+        
+        try {
+          // 使用正确的参数格式: getShipImgPath(shipId, type, damaged, ip)
+          const imagePath = getShipImgPath(id, imageType, isDamaged, ip)
+          console.log(`ShipDataService: 成功获取舰娘 ${id} 图像路径: ${imagePath}`)
+          return imagePath
+        } catch (callError) {
+          console.error(`ShipDataService: 调用getShipImgPath失败:`, callError)
+          // 调用失败，使用默认路径
+          return `../../../assets/images/ship/${shipId}_${type}.png`
+        }
+      } else {
+        console.log(`ShipDataService: poi的getShipImgPath接口不可用，使用默认路径`)
+        return `../../../assets/images/ship/${shipId}_${type}.png`
+      }
+    } catch (error) {
+      console.error('ShipDataService: 获取舰娘图像URL失败:', error)
+      // 如果poi接口不可用，返回默认路径
+      return `../../../assets/images/ship/${shipId}_${type}.png`
+    }
+  }
+
   // 获取数据统计
   getStats() {
     const ships = this.getOwnedShips()
