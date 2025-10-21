@@ -92,7 +92,7 @@ const Notebook = () => {
     : notebooks
 
   return (
-    <>
+    <div className="notebook-wrapper">
       {currentView === 'list' && (
         <div className="notebooks-section">
           <div className="search-and-add-bar">
@@ -162,7 +162,7 @@ const Notebook = () => {
           />
         </div>
       )}
-    </>
+    </div>
   )
 }
 

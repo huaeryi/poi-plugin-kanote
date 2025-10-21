@@ -49,7 +49,15 @@ if not exist "%POI_DIR%" (
 @REM     echo.
 @REM )
 echo 开始构建...
-call npm run build >nul 2>&1
+call npm run build
+set BUILD_EXIT=%ERRORLEVEL%
+if %BUILD_EXIT% neq 0 (
+    echo.
+    echo 错误: 构建失败，退出码 %BUILD_EXIT%
+    echo 请直接运行 "npm run build" 查看完整输出并修复问题。
+    pause
+    exit /b %BUILD_EXIT%
+)
 
 :: 创建目标目录
 set "TARGET_DIR=%POI_DIR%\poi-plugin-kanote"

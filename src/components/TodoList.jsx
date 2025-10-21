@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import ShipSelector from './ShipSelector'
 import AllShipSelector from './AllShipSelector'
 import shipDataService from '../services/ShipDataService'
@@ -415,27 +416,29 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
   // 处理鼠标悬停
   const handleMouseEnter = (e) => {
     if (!isShipTodo) return
-    
+
     // 清除之前的定时器
     if (tooltipTimer) {
       clearTimeout(tooltipTimer)
     }
-    
+
     const rect = e.currentTarget.getBoundingClientRect()
     const position = {
       x: rect.left + rect.width / 2,
       y: rect.top - 10
     }
     setTooltipPosition(position)
-    
+
     // 延迟显示tooltip，避免频繁切换
     const timer = setTimeout(() => {
+      console.log('TodoItem: 显示 tooltip, todo:', todo)
       setShowTooltip(true)
     }, 300)
     setTooltipTimer(timer)
   }
 
   const handleMouseLeave = () => {
+    console.log('TodoItem: 隐藏 tooltip, todo:', todo)
     // 清除定时器
     if (tooltipTimer) {
       clearTimeout(tooltipTimer)
@@ -587,12 +590,15 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
         </div>
       </div>
 
-      {/* 舰娘详细信息 Tooltip */}
-      {showTooltip && isShipTodo && (
-        <ShipTooltip 
-          shipDetails={getShipDetails()}
-          position={tooltipPosition}
-        />
+      {/* 舰娘详细信息 Tooltip - 使用 Portal 渲染到 body 并包裹根类名，保证样式匹配 */}
+      {showTooltip && isShipTodo && createPortal(
+        <div className="poi-plugin-kanote">
+          <ShipTooltip
+            shipDetails={getShipDetails()}
+            position={tooltipPosition}
+          />
+        </div>,
+        document.body
       )}
     </div>
   )
@@ -600,7 +606,8 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
 
 // 舰娘详细信息 Tooltip 组件
 const ShipTooltip = ({ shipDetails, position }) => {
-  if (!shipDetails) return null
+  // 如果没有详情，也渲染一个占位 tooltip，便于调试位置/样式
+  const isEmpty = !shipDetails
 
   const getSpeedText = (speed) => {
     switch(speed) {
@@ -632,17 +639,19 @@ const ShipTooltip = ({ shipDetails, position }) => {
     zIndex: 10000
   }
 
+  const d = shipDetails || { name: '加载中...', type: '', level: '--', hp: '--', firepower: '--', torpedo: '--', aa: '--', armor: '--', luck: '--', speed: '--', range: '--' }
+
   return (
     <div className="ship-tooltip" style={tooltipStyle}>
       <div className="ship-tooltip-header">
-        <h4>{shipDetails.name}</h4>
-        <span className="ship-type">{shipDetails.type}</span>
+        <h4>{d.name}</h4>
+        <span className="ship-type">{d.type}</span>
       </div>
       
       <div className="ship-tooltip-content">
         <div className="ship-stat-row">
           <span className="stat-label">等级:</span>
-          <span className="stat-value">Lv.{shipDetails.level}</span>
+          <span className="stat-value">Lv.{d.level}</span>
         </div>
         
         <div className="ship-stat-row">

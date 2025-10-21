@@ -7,7 +7,7 @@ const App = () => {
   const [currentView, setCurrentView] = useState('leveling') // 默认打开练级计划
 
   return (
-    <div className="app poi-plugin vertical-layout">
+    <div className="poi-plugin-kanote app vertical-layout">
       <div className="main-content">
 
         <div className="action-bar">

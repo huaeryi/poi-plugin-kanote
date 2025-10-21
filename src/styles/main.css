@@ -2,20 +2,15 @@
   font-size: 14px;
 }
 
-/* 基础样式 */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+
 
 /* POI插件容器样式 */
-.poi-plugin {
+.poi-plugin-kanote {
   font-family: 'Microsoft YaHei', 'Arial', sans-serif;
   color: #ffffff;
   height: 100%;
   background: #2f343c;
-}
+
 
 /* 主布局 */
 .app {
@@ -1646,4 +1641,5 @@
   .ship-id-text {
     font-size: 8px;
   }
+}
 }
