@@ -1,7 +1,7 @@
 
 # 📝 KaNote — POI笔记插件
 
-一个为 POI（插件宿主）打造的轻量级笔记与待办插件，方便舰队管理、练级与捞船记录。
+一个为 POI 打造的轻量级笔记与待办插件，方便舰队管理、练级与捞船记录。
 
 ![POI Plugin](https://img.shields.io/badge/POI-Plugin-blue.svg)
 ![Version](https://img.shields.io/badge/version-1.1.5-green.svg)
@@ -12,10 +12,10 @@
 - 练级计划：通过 POI 的 store 读取舰娘数据，支持在练级任务中绑定舰娘并显示详细信息
 - 笔记（Notebook）：分类、标签、全文搜索、自动保存
 
+
 ## ⚙️ 插件安装
-1. 在 POI 的插件管理界面或资源市场搜索 "poi-plugin-kanote" 并安装，或将打包后的插件目录放入 POI 的插件目录并重启 POI。
-2. 在 POI 中打开 KaNote，即可开始使用笔记与待办功能。
-  
+在 POI 的“插件”或“资源”搜索框中直接搜索关键词"poi-plugin-kanote"安装
+
 ## 🚀 快速开始
 
 系统要求：POI v6.3.3+，Node.js 14+
@@ -37,6 +37,10 @@ npm run build
 # 将打包结果安装到 POI（Windows）
 .\install.bat
 ```
+
+### ▶️ 使用
+1. 在 POI 的插件管理界面或资源市场搜索 "poi-plugin-kanote" 并安装，或将打包后的插件目录放入 POI 的插件目录并重启 POI。
+2. 在 POI 中打开 KaNote，即可开始使用笔记与待办功能。
 
 ## 🗂️ 项目结构
 ```
