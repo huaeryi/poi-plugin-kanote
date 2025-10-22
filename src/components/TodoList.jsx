@@ -305,10 +305,22 @@ const TodoList = ({ type = 'general', title = '📋 任务列表' }) => {
   const editLevelingTodo = (id, newTargetLevel) => {
     setTodos(todos.map(todo => {
       if (todo.id === id && todo.shipName) {
+        // 尝试从 shipDataService 获取最新等级，回退到存储的 currentLevel
+        let liveLevel = todo.currentLevel || 1
+        try {
+          if (todo.shipId) {
+            const ship = shipDataService.getShipById(todo.shipId)
+            if (ship && ship.api_lv !== undefined) liveLevel = ship.api_lv
+          }
+        } catch (e) {
+          // ignore
+        }
+
         const updatedTodo = {
           ...todo,
+          currentLevel: liveLevel,
           targetLevel: parseInt(newTargetLevel),
-          text: `${todo.shipName} ${todo.currentLevel} → ${newTargetLevel}`
+          text: `${todo.shipName} ${liveLevel} → ${newTargetLevel}`
         }
         return updatedTodo
       }
@@ -607,10 +619,10 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
         {isEditing ? (
           <div className="todo-edit">
             {isLevelingTodo ? (
-              <div className="leveling-edit">
+                <div className="leveling-edit">
                 <div className="ship-name-display">{todo.shipName}</div>
                 <div className="level-edit">
-                  <span>Lv.{todo.currentLevel} → </span>
+                  <span style={{ color: '#9e9e9e', display: 'inline-block', flex: '0 0 120px', minWidth: '120px', maxWidth: '120px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>Lv.{todo.currentLevel || 1} → </span>
                   <input
                     type="number"
                     value={editTargetLevel}
@@ -622,6 +634,7 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
                     onBlur={handleSave}
                     autoFocus
                     className="target-level-edit"
+                    style={{ width: 80, color: '#4CAF50' }}
                     min="1"
                     max="185"
                   />
@@ -672,10 +685,80 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
                       return <span className={`ship-type-badge ${typeClass}`}>{label}</span>
                     })()}
                   </div>
-                  <div className="level-progress">
-                    Lv.{todo.currentLevel} → Lv.{todo.targetLevel}
-                    {todo.completed && <span className="completed-badge">✅ 已达成</span>}
-                  </div>
+                    <div className="level-progress">
+                      {(() => {
+                        // 计算当前等级（优先实时），目标等级
+                        let current = todo.currentLevel || 1
+                        try {
+                          if (todo.shipId) {
+                            const s = shipDataService.getShipById(todo.shipId)
+                            if (s && s.api_lv !== undefined) current = s.api_lv
+                          }
+                        } catch (e) {}
+
+                        const startLevel = todo.currentLevel || current
+                        const target = todo.targetLevel || startLevel
+                        // 计算进度： (liveLevel - startLevel) / (target - startLevel)
+                        let percent = 0
+                        if (target > startLevel) {
+                          const live = current
+                          percent = Math.round(((live - startLevel) / (target - startLevel)) * 100)
+                          percent = Math.max(0, Math.min(100, percent))
+                        } else {
+                          // 如果目标<=起始，认为已完成
+                          percent = 100
+                        }
+
+                        return (
+                          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+                            <div className="level-progress-text" style={{ flex: '0 0 120px', minWidth: '120px', maxWidth: '120px', color: '#9e9e9e', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                              Lv.{startLevel} → <span style={{ color: '#4CAF50' }}>Lv.{target}</span>
+                              {todo.completed && <span className="completed-badge">✅</span>}
+                            </div>
+
+                            {/* 进度区域：包含轨道、填充、以及三个标记（start/current/target）和对应数字 */}
+                            <div style={{ flex: '0 0 80%', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                              <div style={{ position: 'relative', width: '100%', height: '12px' }}>
+                                {/* 轨道 */}
+                                <div style={{
+                                  position: 'absolute',
+                                  left: 0,
+                                  right: 0,
+                                  top: '50%',
+                                  transform: 'translateY(-50%)',
+                                  height: '8px',
+                                  background: '#2e2e2e',
+                                  borderRadius: '2px',
+                                  overflow: 'hidden'
+                                }}>
+                                  <div style={{
+                                    width: `${todo.completed ? 100 : percent}%`,
+                                    height: '100%',
+                                    background: todo.completed ? '#4CAF50' : '#2196F3',
+                                    borderRadius: '2px',
+                                    transition: 'width 300ms ease'
+                                  }} />
+                                </div>
+
+                                {/* 标记：起始(左)、当前(中间)、目标(右) */}
+                                <div style={{ position: 'absolute', top: 0, left: 0, transform: 'translateX(-50%)', width: '2px', height: '12px', background: '#fff', opacity: 0.85 }} title={`起始: ${startLevel}`} />
+
+                                <div style={{ position: 'absolute', top: 0, left: `${todo.completed ? 100 : percent}%`, transform: 'translateX(-50%)', width: '2px', height: '12px', background: '#FFD54F' }} title={`当前: ${current}`} />
+
+                                <div style={{ position: 'absolute', top: 0, right: 0, transform: 'translateX(50%)', width: '2px', height: '12px', background: '#4CAF50', opacity: 0.95 }} title={`目标: ${target}`} />
+                              </div>
+
+                              {/* 数字标签行：与标记对齐 */}
+                              <div style={{ position: 'relative', width: '100%', fontSize: '0.8rem', color: '#cccccc' }}>
+                                <div style={{ position: 'absolute', left: 0, transform: 'translateX(-50%)' }}>{startLevel}</div>
+                                <div style={{ position: 'absolute', left: `${todo.completed ? 100 : percent}%`, transform: 'translateX(-50%)', color: '#FFD54F' }}>{current}</div>
+                                <div style={{ position: 'absolute', right: 0, transform: 'translateX(50%)', color: '#4CAF50' }}>{target}</div>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })()}
+                    </div>
                 </div>
               ) : isFarmingTodo ? (
                 <div className="farming-display">
@@ -703,7 +786,7 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
                   <div className="farming-status">
                     🚢 捞船目标
                     {!todo.owned && <span className="not-owned-badge">未获得</span>}
-                    {todo.completed && <span className="completed-badge">✅ 已获得</span>}
+                    {todo.completed && <span className="completed-badge">✅</span>}
                   </div>
                 </div>
               ) : (
