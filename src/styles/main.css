@@ -615,7 +615,7 @@
 /* 左侧头像区域 */
 .todo-avatar {
   flex-shrink: 0;
-  width: 48px;
+  width: 96px;
   height: 48px;
   display: flex;
   align-items: center;
@@ -623,21 +623,24 @@
 }
 
 .ship-avatar {
-  width: 48px;
-  height: 48px;
+  /* 在 todo 中使用的头像应充满容器，按比例裁剪 */
+  width: 100%;
+  height: 100%;
   position: relative;
-  border-radius: 6px;
+  border-radius: 8px;
   overflow: hidden;
   background: #2f343c;
   border: 2px solid #555555;
+  object-fit: cover; /* fallback for img elements */
 }
-
 .ship-avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 6px;
 }
+
+
 
 .ship-avatar-placeholder {
   width: 100%;
@@ -1407,6 +1410,41 @@
   border-radius: 3px;
 }
 
+
+.ship-type-badge {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 0.75rem;
+  color: #ffffff;
+  background: #444444; /* 扁平纯色背景 */
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: none; /* 移除边框以保持扁平风 */
+  box-shadow: none; /* 移除内阴影/立体感 */
+}
+/* 支持按类型颜色化的小类（可选） */
+.ship-type-badge.type-1 { background:#4CAF50; }
+.ship-type-badge.type-2 { background:#2196F3; }
+.ship-type-badge.type-3 { background:#9C27B0; }
+.ship-type-badge.type-4 { background:#FF9800; }
+.ship-type-badge.type-5 { background:#00BCD4; }
+.ship-type-badge.type-6 { background:#E91E63; }
+.ship-type-badge.type-7 { background:#F44336; }
+.ship-type-badge.type-8  { background: #795548; } /* 航空戦艦 */
+.ship-type-badge.type-9 { background: #FF5722; } /* 正規空母 */
+.ship-type-badge.type-10 { background: #607D8B; } /* 超弩級戦艦 */
+.ship-type-badge.type-11 { background: #3F51B5; } /* 潜水艦 */
+.ship-type-badge.type-12 { background: #673AB7; } /* 潜水空母 */
+.ship-type-badge.type-13 { background: #009688; } /* 補給艦 */
+.ship-type-badge.type-14 { background: #8BC34A; } /* 水上機母艦 */
+.ship-type-badge.type-15 { background: #CDDC39; } /* 揚陸艦 */
+.ship-type-badge.type-16 { background: #FFC107; } /* 装甲空母 */
+.ship-type-badge.type-17 { background: #FFEB3B; } /* 工作艦 */
+.ship-type-badge.type-18 { background: #9E9E9E; } /* 潜水母艦 */
+.ship-type-badge.type-19 { background: #607D8B; } /* 練習巡洋艦 */
+.ship-type-badge.type-20 { background: #009688; } /* 補給艦 */
+.ship-type-badge.type-21 { background: #795548; } /* 备用 */
+
 .ship-tooltip-content {
   display: flex;
   flex-direction: column;
@@ -1447,7 +1485,7 @@
 }
 
 .stat-icon {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
 }
 
 .stat-number {
@@ -1753,10 +1791,10 @@
 /* 下拉选择器中的舰娘头像样式 */
 .ship-selector .ship-avatar-container,
 .all-ship-selector .ship-avatar-container {
-  width: 32px;
-  height: 16px; /* 2:1比例，与ShipInfo保持一致 */
+  width: 72px;
+  height: 36px; /* 2:1比例，与ShipInfo保持一致 */
   flex-shrink: 0;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
   background: #555555;
   border: 1px solid #666666;
@@ -1764,8 +1802,9 @@
 
 .ship-selector .ship-avatar,
 .all-ship-selector .ship-avatar {
-  width: 32px;
-  height: 16px; /* 2:1比例，与ShipInfo保持一致 */
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
   object-fit: cover; /* 使用cover来裁剪缩放，与ShipInfo保持一致 */
   object-position: center; /* 默认居中，会被avatarOffset覆盖 */
 }
@@ -1779,7 +1818,7 @@
   align-items: center;
   justify-content: center;
   background: #555555;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .ship-selector .ship-placeholder-text,
@@ -1798,7 +1837,7 @@
 
 /* 练级计划中的舰娘头像样式 */
 .todo-avatar .ship-avatar-container {
-  width: 48px;
+  width: 96px;
   height: 48px; /* 保持与容器相同的高度 */
   border-radius: 6px;
   overflow: hidden;
@@ -1810,15 +1849,16 @@
 }
 
 .todo-avatar .ship-avatar {
-  width: 48px;
-  height: 24px; /* 2:1比例，与ShipInfo保持一致 */
+  width: 100%;
+  height: 100%;
+  border-radius: 6px;
   object-fit: cover; /* 使用cover来裁剪缩放，与ShipInfo保持一致 */
   object-position: center; /* 默认居中，会被avatarOffset覆盖 */
 }
 
 .todo-avatar .ship-image-placeholder {
-  width: 48px;
-  height: 24px; /* 2:1比例，与头像保持一致 */
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;

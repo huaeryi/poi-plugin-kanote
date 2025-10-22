@@ -80,6 +80,41 @@ const ShipImageWithFallback = ({ shipId, shipName, primaryUrl, avatarOffset = 0,
   )
 }
 
+// 内置的舰娘类型映射（作为 fallback）
+const getShipTypeNameInline = (typeId) => {
+  const shipTypes = [
+    "海防艦",
+    "駆逐艦",
+    "軽巡洋艦",
+    "重雷装巡洋艦",
+    "重巡洋艦",
+    "航空巡洋艦",
+    "軽空母",
+    "戦艦",
+    "戦艦",
+    "航空戦艦",
+    "正規空母",
+    "超弩級戦艦",
+    "潜水艦",
+    "潜水空母",
+    "補給艦",
+    "水上機母艦",
+    "揚陸艦",
+    "装甲空母",
+    "工作艦",
+    "潜水母艦",
+    "練習巡洋艦",
+    "補給艦"
+  ]
+
+  if (typeId === undefined || typeId === null) return ''
+  const id = parseInt(typeId) - 1
+  if (!isNaN(id) && id >= 0 && id < shipTypes.length) {
+    return shipTypes[id]
+  }
+  return `类型${typeId}`
+}
+
 const TodoList = ({ type = 'general', title = '📋 任务列表' }) => {
   const [todos, setTodos] = useState([])
   const [newTodo, setNewTodo] = useState('')
@@ -166,7 +201,7 @@ const TodoList = ({ type = 'general', title = '📋 任务列表' }) => {
     return () => clearTimeout(timeoutId)
   }, [isLevelingType]) // 只在类型改变时触发
 
-  // 定期检查练级完成状态（每30秒）
+  // 定期检查练级完成状态（每1秒）
   useEffect(() => {
     if (!isLevelingType) return
 
@@ -485,7 +520,10 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
         type: shipType,
         level: ship.api_lv || 1,
         exp: ship.api_exp || 0,
-        hp: ship.api_maxhp || 0,
+        // 最大耐久优先使用 api_maxhp
+        hp: ship.api_maxhp || ship.api_hp || ship.hp || 0,
+        // 当前耐久可能在不同字段，优先使用 api_nowhp
+        currentHp: ship.api_nowhp || ship.api_hp_now || ship.currentHp || ship.hp_now || null,
         firepower: ship.api_karyoku ? ship.api_karyoku[0] : 0,
         torpedo: ship.api_raisou ? ship.api_raisou[0] : 0,
         aa: ship.api_taiku ? ship.api_taiku[0] : 0,
@@ -613,7 +651,27 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
             >
               {isLevelingTodo ? (
                 <div className="leveling-display">
-                  <div className="ship-name">{todo.shipName}</div>
+                  <div className="ship-name">
+                    {todo.shipName}
+                    {(() => {
+                      const typeVal = getShipDetails()?.type
+                      const label = (() => {
+                        try {
+                          if (typeVal !== undefined && typeVal !== null) {
+                            const nameFromService = shipDataService.getShipTypeName(typeVal)
+                            if (nameFromService && nameFromService !== '未知') return nameFromService
+                          }
+                        } catch (e) {}
+                        return getShipTypeNameInline(typeVal)
+                      })()
+
+                      const typeClass = (typeVal !== undefined && typeVal !== null && !isNaN(parseInt(typeVal)))
+                        ? `type-${parseInt(typeVal)}`
+                        : ''
+
+                      return <span className={`ship-type-badge ${typeClass}`}>{label}</span>
+                    })()}
+                  </div>
                   <div className="level-progress">
                     Lv.{todo.currentLevel} → Lv.{todo.targetLevel}
                     {todo.completed && <span className="completed-badge">✅ 已达成</span>}
@@ -621,7 +679,27 @@ const TodoItem = ({ todo, onToggle, onDelete, onEdit, onEditLeveling, isLeveling
                 </div>
               ) : isFarmingTodo ? (
                 <div className="farming-display">
-                  <div className="ship-name">{todo.shipName}</div>
+                  <div className="ship-name">
+                    {todo.shipName}
+                    {(() => {
+                      const typeVal = getShipDetails()?.type
+                      const label = (() => {
+                        try {
+                          if (typeVal !== undefined && typeVal !== null) {
+                            const nameFromService = shipDataService.getShipTypeName(typeVal)
+                            if (nameFromService && nameFromService !== '未知') return nameFromService
+                          }
+                        } catch (e) {}
+                        return getShipTypeNameInline(typeVal)
+                      })()
+
+                      const typeClass = (typeVal !== undefined && typeVal !== null && !isNaN(parseInt(typeVal)))
+                        ? `type-${parseInt(typeVal)}`
+                        : ''
+
+                      return <span className={`ship-type-badge ${typeClass}`}>{label}</span>
+                    })()}
+                  </div>
                   <div className="farming-status">
                     🚢 捞船目标
                     {!todo.owned && <span className="not-owned-badge">未获得</span>}
@@ -723,11 +801,41 @@ const ShipTooltip = ({ shipDetails, position }) => {
 
   const d = shipDetails || { name: '加载中...', type: '', level: '--', hp: '--', firepower: '--', torpedo: '--', aa: '--', armor: '--', luck: '--', speed: '--', range: '--' }
 
+  // 解析类型为可读名称，优先使用 shipDataService 的映射函数，回退到内置映射
+  const typeText = (() => {
+    const typeVal = d.type
+    if (typeVal === undefined || typeVal === null || typeVal === '') return ''
+    try {
+      const nameFromService = shipDataService.getShipTypeName(typeVal)
+      if (nameFromService && nameFromService !== '未知') return nameFromService
+    } catch (e) {
+      // ignore
+    }
+    return getShipTypeNameInline(typeVal)
+  })()
+
   return (
     <div className="ship-tooltip" style={tooltipStyle}>
       <div className="ship-tooltip-header">
         <h4>{d.name}</h4>
-        <span className="ship-type">{d.type}</span>
+        {(() => {
+          const typeVal = d.type
+          const label = (() => {
+            try {
+              if (typeVal !== undefined && typeVal !== null) {
+                const nameFromService = shipDataService.getShipTypeName(typeVal)
+                if (nameFromService && nameFromService !== '未知') return nameFromService
+              }
+            } catch (e) {}
+            return getShipTypeNameInline(typeVal)
+          })()
+
+          const typeClass = (typeVal !== undefined && typeVal !== null && !isNaN(parseInt(typeVal)))
+            ? `type-${parseInt(typeVal)}`
+            : ''
+
+          return <span className={`ship-type-badge ${typeClass}`}>{label}</span>
+        })()}
       </div>
       
       <div className="ship-tooltip-content">
@@ -738,24 +846,46 @@ const ShipTooltip = ({ shipDetails, position }) => {
         
         <div className="ship-stat-row">
           <span className="stat-label">耐久:</span>
-          <span className="stat-value">{shipDetails.hp}</span>
+          <span className="stat-value">
+            {(() => {
+              // 优先显示 当前/最大 格式
+              const cur = shipDetails.currentHp
+              const max = shipDetails.hp
+              if ((cur === undefined || cur === null || cur === '') && (max === undefined || max === null || max === '')) {
+                return '--'
+              }
+
+              // 如果有当前耐久且最大耐久，显示 cur/max
+              if (cur !== undefined && cur !== null && cur !== '' && max !== undefined && max !== null && max !== '') {
+                return `${cur}/${max}`
+              }
+
+              // 回退：如果只有最大耐久，显示最大
+              if (max !== undefined && max !== null && max !== '') return max
+
+              // 回退：如果只有当前耐久，显示当前
+              if (cur !== undefined && cur !== null && cur !== '') return cur
+
+              return '--'
+            })()}
+          </span>
         </div>
         
         <div className="ship-stats-grid">
           <div className="stat-item">
-            <span className="stat-icon">🔥</span>
+            <span className="stat-icon">火力</span>
             <span className="stat-number">{shipDetails.firepower}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-icon">🚀</span>
+            <span className="stat-icon">雷装</span>
             <span className="stat-number">{shipDetails.torpedo}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-icon">✈️</span>
+            <span className="stat-icon">对空</span>
             <span className="stat-number">{shipDetails.aa}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-icon">🛡️</span>
+            <span className="stat-icon">装甲</span>
             <span className="stat-number">{shipDetails.armor}</span>
           </div>
         </div>
